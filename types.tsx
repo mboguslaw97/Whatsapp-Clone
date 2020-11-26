@@ -22,6 +22,7 @@ export type RootStackParamList = {
   Root: undefined;
   ChatRoom: undefined;
   NotFound: undefined;
+  Contacts: undefined;
 };
 
 export type TabOneParamList = {
@@ -36,4 +37,5 @@ export type User = {
   id: string;
   name: string;
   imageUri: string;
+  status?: string;
 };
