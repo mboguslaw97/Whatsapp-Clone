@@ -1,14 +1,15 @@
-import Amplify, { API, Auth, graphqlOperation } from "aws-amplify";
-import { withAuthenticator } from "aws-amplify-react-native";
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import config from "./aws-exports";
-import { createUser } from "./graphql/mutations";
-import { getUser } from "./graphql/queries";
-import useCachedResources from "./hooks/useCachedResources";
-import useColorScheme from "./hooks/useColorScheme";
-import Navigation from "./navigation";
+import Amplify, { API, Auth, graphqlOperation } from 'aws-amplify';
+import { withAuthenticator } from 'aws-amplify-react-native';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import config from './aws-exports';
+import { createUser } from './graphql/mutations';
+import { getUser } from './graphql/queries';
+import useCachedResources from './hooks/useCachedResources';
+import useColorScheme from './hooks/useColorScheme';
+import Navigation from './navigation';
 
 Amplify.configure(config);
 
@@ -29,7 +30,6 @@ function App() {
         );
 
         if (userData.data.getUser) {
-          console.log("User already exists in DB");
           return;
         }
 
@@ -46,7 +46,7 @@ function App() {
       }
     };
     fetchUser();
-  });
+  }, []);
 
   if (!isLoadingComplete) {
     return null;
