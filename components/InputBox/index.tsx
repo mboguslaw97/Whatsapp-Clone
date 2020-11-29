@@ -9,7 +9,7 @@ import {
     Entypo, FontAwesome5, Fontisto, MaterialCommunityIcons, MaterialIcons
 } from '@expo/vector-icons';
 
-import { createMessage } from '../../graphql/mutations';
+import { createMessage, updateChatRoom } from '../../graphql/mutations';
 import styles from './styles';
 
 const InputBox = (props) => {
@@ -31,12 +31,20 @@ const InputBox = (props) => {
 
 	const onSendPress = async () => {
 		try {
-			await API.graphql(
+			const newMessageData = await API.graphql(
 				graphqlOperation(createMessage, {
 					input: {
 						content: message,
 						userID: myUserID,
 						chatRoomID: chatRoomID,
+					},
+				})
+			);
+			await API.graphql(
+				graphqlOperation(updateChatRoom, {
+					input: {
+						id: chatRoomID,
+						lastMessageID: newMessageData.data.createMessage.id,
 					},
 				})
 			);

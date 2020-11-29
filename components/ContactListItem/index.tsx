@@ -9,67 +9,71 @@ import { User } from '../../types';
 import styles from './styles';
 
 export type ContactListItemProps = {
-  user: User;
+	user: User;
 };
 
 export default function ContactListItem(props: ContactListItemProps) {
-  const { user } = props;
-  const navigation = useNavigation();
-  const onPress = async () => {
-    try {
-      // Create new chatroom
-      const newChatRoomData = await API.graphql(
-        graphqlOperation(createChatRoom, { input: {} })
-      );
+	const { user } = props;
+	const navigation = useNavigation();
+	const onPress = async () => {
+		try {
+			// Create new chatroom
+			const newChatRoomData = await API.graphql(
+				graphqlOperation(createChatRoom, {
+					input: {
+						lastMessageID: "0",
+					},
+				})
+			);
 
-      if (!newChatRoomData) {
-        console.log("Failed to create chat room");
-        return;
-      }
+			if (!newChatRoomData) {
+				console.log("Failed to create chat room");
+				return;
+			}
 
-      const newChatRoom = newChatRoomData.data.createChatRoom;
+			const newChatRoom = newChatRoomData.data.createChatRoom;
 
-      // Add user to chatroom
-      await API.graphql(
-        graphqlOperation(createChatRoomUser, {
-          input: {
-            userID: user.id,
-            chatRoomID: newChatRoom.id,
-          },
-        })
-      );
+			// Add user to chatroom
+			await API.graphql(
+				graphqlOperation(createChatRoomUser, {
+					input: {
+						userID: user.id,
+						chatRoomID: newChatRoom.id,
+					},
+				})
+			);
 
-      // Add auth user to chatroom
-      const userInfo = await Auth.currentAuthenticatedUser();
-      await API.graphql(
-        graphqlOperation(createChatRoomUser, {
-          input: {
-            userID: userInfo.attributes.sub,
-            chatRoomID: newChatRoom.id,
-          },
-        })
-      );
+			// Add auth user to chatroom
+			const userInfo = await Auth.currentAuthenticatedUser();
+			await API.graphql(
+				graphqlOperation(createChatRoomUser, {
+					input: {
+						userID: userInfo.attributes.sub,
+						chatRoomID: newChatRoom.id,
+					},
+				})
+			);
 
-      navigation.navigate("ChatRoom", {
-        id: newChatRoom.id,
-        name: "Hardcode Name",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+			navigation.navigate("ChatRoom", {
+				id: newChatRoom.id,
+				name: "Hardcode Name",
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-  return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Image source={{ uri: user.imageUri }} style={styles.avatar} />
-          <View style={styles.midContainer}>
-            <Text style={styles.username}>{user.name}</Text>
-            <Text style={styles.status}>{user.status}</Text>
-          </View>
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
-  );
+	return (
+		<TouchableWithoutFeedback onPress={onPress}>
+			<View style={styles.container}>
+				<View style={styles.leftContainer}>
+					<Image source={{ uri: user.imageUri }} style={styles.avatar} />
+					<View style={styles.midContainer}>
+						<Text style={styles.username}>{user.name}</Text>
+						<Text style={styles.status}>{user.status}</Text>
+					</View>
+				</View>
+			</View>
+		</TouchableWithoutFeedback>
+	);
 }
