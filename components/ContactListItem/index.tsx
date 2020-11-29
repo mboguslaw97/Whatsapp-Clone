@@ -30,7 +30,7 @@ export default function ContactListItem(props: ContactListItemProps) {
       const newChatRoom = newChatRoomData.data.createChatRoom;
 
       // Add user to chatroom
-      const test = await API.graphql(
+      await API.graphql(
         graphqlOperation(createChatRoomUser, {
           input: {
             userID: user.id,
@@ -38,8 +38,6 @@ export default function ContactListItem(props: ContactListItemProps) {
           },
         })
       );
-
-      console.log(test);
 
       // Add auth user to chatroom
       const userInfo = await Auth.currentAuthenticatedUser();
@@ -60,7 +58,7 @@ export default function ContactListItem(props: ContactListItemProps) {
       console.log(error);
     }
   };
-  console.log(user);
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.container}>
